@@ -1,18 +1,22 @@
 package com.example.gpo;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -39,7 +43,9 @@ public class FORMAPS extends Activity {
     List<ScanResult> wifiList;
     private static final String PREFS_FILE = "Account";
     private static final String PREF_ROOMS = "Rooms";
+    private static final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION = 1;
     SharedPreferences settings;
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint({"JavascriptInterface", "SetJavaScriptEnabled"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +58,26 @@ public class FORMAPS extends Activity {
         time=(TextView) findViewById(R.id.timemaps);
         pb=(ProgressBar)findViewById(R.id.pbmaps) ;
 
-        mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (!mWifiManager.isWifiEnabled()) {
-            // If wifi disabled then enable it
-            Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
-            mWifiManager.setWifiEnabled(true);
+        if((checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) ||
+                (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)){
+            requestPermissions(new String[] {
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                },
+                    PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION);
+        } else {
+            mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            if (!mWifiManager.isWifiEnabled()) {
+                // If wifi disabled then enable it
+                Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
+                mWifiManager.setWifiEnabled(true);
+            }
+            mWifiReceiver = new WifiReceiver();
+            IntentFilter mIntentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+            mIntentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
+            getApplicationContext().registerReceiver(mWifiReceiver, mIntentFilter);
+            mWifiManager.startScan();
         }
-        mWifiReceiver = new WifiReceiver();
-        IntentFilter mIntentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        mIntentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
-        getApplicationContext().registerReceiver(mWifiReceiver, mIntentFilter);
-        mWifiManager.startScan();
 
         webView = (WebView) findViewById(R.id.kartishki);
         webView.getSettings().setJavaScriptEnabled(true);
@@ -1166,6 +1181,26 @@ public class FORMAPS extends Activity {
             }
         }, "room431");
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            if (!mWifiManager.isWifiEnabled()) {
+                // If wifi disabled then enable it
+                Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
+                mWifiManager.setWifiEnabled(true);
+            }
+            mWifiReceiver = new WifiReceiver();
+            IntentFilter mIntentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+            mIntentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
+            getApplicationContext().registerReceiver(mWifiReceiver, mIntentFilter);
+            mWifiManager.startScan();
+        }
+    }
 public class MyTask extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
@@ -2108,11 +2143,14 @@ public class MyTask extends AsyncTask<String, String, String> {
             if (state == WifiManager.WIFI_STATE_ENABLED) {
                 wifiList = mWifiManager.getScanResults();
                 generatearrayrssi(wifiList);
+                mWifiManager.startScan();
             }
         }
     }
     public void onPause() {
-        getApplicationContext().unregisterReceiver(mWifiReceiver);
+        if (mWifiReceiver != null) {
+            getApplicationContext().unregisterReceiver(mWifiReceiver);
+        }
         super.onPause();
     }
 

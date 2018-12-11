@@ -63,7 +63,20 @@ public class Maps2 extends Fragment {
         @Override
         public void onClick(View v) {
             int selectedItemPosition = recyclerView.getChildPosition(v);
-            Intent i = new Intent(getActivity(), FORMAPS.class);
+            Intent i;
+            switch (selectedItemPosition) {
+                case 0:
+                    i = new Intent(getActivity(), FORMAPS.class);
+                    break;
+                case 1:
+                    i = new Intent(getActivity(), WifiPosition.class);
+                    break;
+                case 2:
+                    i = new Intent(getActivity(), TusurFet.class);
+                    break;
+                default:
+                    i = new Intent(getActivity(), FORMAPS.class);
+            }
             getActivity().startActivity(i);
         }
     }

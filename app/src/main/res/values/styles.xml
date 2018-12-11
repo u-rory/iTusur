@@ -9,4 +9,10 @@
         <item name="android:windowBackground">@color/white</item>
     </style>
 
+    <style name="AppTheme.NoActionBar" parent="GPOTheme2">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+    </style>
+
 </resources>
