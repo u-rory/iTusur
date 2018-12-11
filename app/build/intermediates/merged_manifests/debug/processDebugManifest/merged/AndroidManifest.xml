@@ -11,11 +11,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <meta-data
-        android:name="android.support.VERSION"
-        android:value="25.3.1" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +22,7 @@
         android:label="iTUSUR"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:testOnly="true"
         android:theme="@style/GPOTheme2" >
         <activity
             android:name="com.example.gpo.navigate"
@@ -38,11 +37,19 @@
         <activity
             android:name="com.example.gpo.FORMAPS"
             android:label="@string/title_activity_formaps" />
+        <activity
+            android:name="com.example.gpo.TusurFet"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.example.gpo.WifiPosition"
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        <service
-            android:name="com.example.gpo.Wifi.WifiService"
-            android:enabled="true"
-            android:exported="true" />
+        <meta-data
+            android:name="android.support.VERSION"
+            android:value="26.1.0" />
+        <meta-data
+            android:name="android.arch.lifecycle.VERSION"
+            android:value="27.0.0-SNAPSHOT" />
     </application>
 
 </manifest>

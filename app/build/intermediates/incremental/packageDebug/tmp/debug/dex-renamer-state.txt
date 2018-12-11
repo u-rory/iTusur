@@ -1,7 +1,7 @@
-#Sat Dec 08 22:28:53 GMT+07:00 2018
-base.0=D\:\\ProjectAs\\LastGPO\\iTusur\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
+#Tue Dec 11 20:20:03 NOVT 2018
+base.0=C\:\\Users\\Sergey\\AndroidStudioProjects\\iTusur\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
 path.1=classes.dex
 renamed.1=classes2.dex
 path.0=classes.dex
 renamed.0=classes.dex
-base.1=D\:\\ProjectAs\\LastGPO\\iTusur\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+base.1=C\:\\Users\\Sergey\\AndroidStudioProjects\\iTusur\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0

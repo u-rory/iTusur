@@ -1,4 +1,0 @@
-#Wed Dec 05 16:41:00 GMT+07:00 2018
-base.0=C\:\\Users\\sierRa\\Documents\\gpo\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\5
-path.0=classes.dex
-renamed.0=classes.dex

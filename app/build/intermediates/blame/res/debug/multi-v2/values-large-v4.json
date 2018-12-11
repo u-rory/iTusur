@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\ProjectAs\\LastGPO\\iTusur\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-large-v4\\values-large-v4.xml",
+            "outputFile": "C:\\Users\\Sergey\\AndroidStudioProjects\\iTusur\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-large-v4\\values-large-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\sierRa\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-25.3.1.aar\\ce0dee53513ff05605c0d48cb7d264b6\\res\\values-large-v4\\values-large-v4.xml",
+                    "source": "C:\\Users\\Sergey\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\0a1344fffcffa18aa2ddae7654ad03d7\\res\\values-large-v4\\values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
                         "startColumns": "4,4,4,4,4,4,4,4,4",
