@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Слой_1"
+     xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" x="0px" y="0px">
+    <style type="text/css">
+        .st0{fill:#FFFFFF;stroke:#D9D8D8;stroke-width:2;stroke-miterlimit:10;}
+        .st1{fill:none;stroke:#9D9D9C;stroke-miterlimit:10;}
+    </style>
+    <circle class="st0" cx="15.2" cy="15" r="12.9"/>
+    <line class="st1" x1="7" y1="15.5" x2="24" y2="15.5"/>
+</svg>

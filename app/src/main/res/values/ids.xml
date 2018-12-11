@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="btn_first_floor"/>
+    <item type="id" name="btn_second_floor"/>
+    <item type="id" name="btn_third_floor"/>
+    <item type="id" name="btn_fourth_floor"/>
+</resources>
