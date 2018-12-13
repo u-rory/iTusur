@@ -13,9 +13,12 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.logging.Logger;
 
 public class TranslateScaleView extends ViewGroup {
     float dx;
@@ -173,13 +176,17 @@ public class TranslateScaleView extends ViewGroup {
         canvas.save();
         canvas.translate(values[Matrix.MTRANS_X], values[Matrix.MTRANS_Y]);
         canvas.scale(values[Matrix.MSCALE_X], values[Matrix.MSCALE_Y]);
+        Log.e("", "x = " + values[Matrix.MTRANS_X] + "\n" + "y = " + values[Matrix.MTRANS_Y]);
         this.canvas = canvas;
         //svg.renderToCanvas(canvas);
         //drawable.draw(canvas);
         vectorDrawable.draw(canvas);
         mPaint.setColor(Color.RED);
         mPaint.setStrokeWidth(10);
-        canvas.drawPoint(50, 50, mPaint);
+        canvas.drawPoint(0, 0, mPaint); //0 0
+        canvas.drawPoint(720, 0, mPaint); //1 0
+        canvas.drawPoint(720, 720, mPaint); //1 1
+        canvas.drawPoint(0, 720, mPaint); //0 1
         canvas.restore();
     }
 

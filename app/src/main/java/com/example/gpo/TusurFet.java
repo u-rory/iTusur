@@ -46,7 +46,8 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
         btnFirstFloor.setBackgroundResource(R.drawable.ic_btn_floor1);
         btnFirstFloor.setTextSize(20);
         btnFirstFloor.setText("1");
-        btnFirstFloor.setTextColor(Color.rgb( 6, 147, 248));
+        //btnFirstFloor.setTextColor(Color.rgb( 6, 147, 248));
+        btnFirstFloor.setTextColor(Color.rgb( 217, 216, 216));
 
         btnSecondFloor = new Button(context);
         btnSecondFloor.setId(R.id.btn_second_floor);
@@ -73,7 +74,8 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
         btnFourthFloor.setBackgroundResource(R.drawable.ic_btn_floor1);
         btnFourthFloor.setTextSize(20);
         btnFourthFloor.setText("4");
-        btnFourthFloor.setTextColor(Color.rgb(217, 216, 216));
+        //btnFourthFloor.setTextColor(Color.rgb(217, 216, 216));
+        btnFourthFloor.setTextColor(Color.rgb(6, 147, 248));
 
         /*try {
             SVG svg = SVG.getFromAsset(getAssets(), "svg/tusur_fet1.svg");
@@ -81,9 +83,11 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
         } catch (SVGParseException | IOException e) {
             e.printStackTrace();
         }*/
-        vectorDrawable = (VectorDrawable) getDrawable(R.drawable.map_tusur_fet1);
+        //vectorDrawable = (VectorDrawable) getDrawable(R.drawable.map_tusur_fet1);
+        vectorDrawable = (VectorDrawable) getDrawable(R.drawable.map_tusur_fet4_720x720);
         if (vectorDrawable != null) {
-            vectorDrawable.setBounds(0, 0, 1000, 1000);
+            //vectorDrawable.setBounds(0, 0, 1000, 1000);
+            vectorDrawable.setBounds(0, 0, 720, 720);
         }
 
         tusurFet = new TranslateScaleView(context, vectorDrawable);
@@ -105,7 +109,8 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
         btnThirdFloor.setOnClickListener(this);
         btnFourthFloor.setOnClickListener(this);
 
-        btnClicked = R.id.btn_first_floor;
+        //btnClicked = R.id.btn_first_floor;
+        btnClicked = R.id.btn_fourth_floor;
 
     }
 
