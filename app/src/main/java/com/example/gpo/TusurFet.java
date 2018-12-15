@@ -1,16 +1,30 @@
 package com.example.gpo;
 
+import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
+
+import java.util.List;
 
 public class TusurFet extends AppCompatActivity implements View.OnClickListener {
 
@@ -19,20 +33,57 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
     private Drawable drawable;
     private VectorDrawable vectorDrawable;
     private int btnClicked;
-
+    WifiManager mWifiManager;
+    WifiReceiver mWifiReceiver;
+    List<ScanResult> wifiList;
     private Button btnFirstFloor;
     private Button btnSecondFloor;
     private Button btnThirdFloor;
     private Button btnFourthFloor;
+    private static final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION = 1;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
+
+
+
+        /*if((checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) ||
+                (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)){
+            requestPermissions(new String[] {
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION);
+        } else {*/
+            mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            if (!mWifiManager.isWifiEnabled()) {
+                // If wifi disabled then enable it
+                Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
+                mWifiManager.setWifiEnabled(true);
+            }
+            mWifiReceiver = new WifiReceiver();
+            IntentFilter mIntentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+            mIntentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
+            getApplicationContext().registerReceiver(mWifiReceiver, mIntentFilter);
+            mWifiManager.startScan();
+        //}
+
+
+
+
+
+
+
+
+
+
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -200,4 +251,204 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
                 btnFourthFloor.setTextColor(Color.rgb(217, 216, 216));
         }
     }
+
+
+
+    private void CalcRSSIbeetweenUserandKT( int[] rssi, int countkt, int floor)
+    {
+
+        int[][][] arraykt = new int[5][20][2];//4
+        //4FloorRouters
+        //lvl
+       /* arraykt[4][0][0] = 19;arraykt[4][0][1] =0 ;arraykt[4][0][2] = 0;arraykt[4][0][3] = 0;
+        arraykt[4][1][0] = 0;arraykt[4][1][1] =19 ;arraykt[4][1][2] = 0;arraykt[4][1][3] = 0;
+        arraykt[4][2][0]= 0;arraykt[4][2][1] =0;arraykt[4][2][2] = 19;arraykt[4][2][3] = 0;
+        arraykt[4][3][0] = 0;arraykt[4][3][1] =0 ;arraykt[4][3][2] = 0;arraykt[4][3][3] = 19;
+        //............
+        //kt
+        arraykt[4][4][0] = mWifiManager.calculateSignalLevel(-92,20);arraykt[4][4][1] =mWifiManager.calculateSignalLevel(-63,20) ;arraykt[4][4][2] = mWifiManager.calculateSignalLevel(-110,20);arraykt[4][4][3] = mWifiManager.calculateSignalLevel(-110,20);
+        arraykt[4][5][0] = mWifiManager.calculateSignalLevel(-62   ,20);arraykt[4][5][1] =mWifiManager.calculateSignalLevel(-82,20) ;arraykt[4][5][1] = mWifiManager.calculateSignalLevel(-69,20);arraykt[4][5][3] = mWifiManager.calculateSignalLevel(-69,20);
+        arraykt[4][6][0]= mWifiManager.calculateSignalLevel(-69,20);arraykt[4][6][1] =mWifiManager.calculateSignalLevel(-69,20);arraykt[4][6][2] = mWifiManager.calculateSignalLevel(-69,20);arraykt[4][6][3] = mWifiManager.calculateSignalLevel(-69,20);
+        //............*/
+        arraykt[4][0][0] = mWifiManager.calculateSignalLevel(-35,20);arraykt[4][0][1] =mWifiManager.calculateSignalLevel(-62,20) ;
+        arraykt[4][1][0] = mWifiManager.calculateSignalLevel(-74,20);arraykt[4][1][1] =mWifiManager.calculateSignalLevel(-57,20) ;
+        arraykt[4][2][0]= mWifiManager.calculateSignalLevel(-63,20);arraykt[4][2][1] =mWifiManager.calculateSignalLevel(-62,20);
+        arraykt[4][3][0] = mWifiManager.calculateSignalLevel(-69,20);arraykt[4][3][1] =mWifiManager.calculateSignalLevel(-60,20) ;
+
+
+        int [][] raznica = new int [countkt][4];
+
+      for(int i = 0; i<countkt; i++)
+      {
+          for(int j=0; j<4;j++)
+          {
+              raznica[i][j]=Math.abs(arraykt[floor ][i][j]-rssi[j]);
+          }
+      }
+
+        int [] podhodit = new int [countkt];
+      int [] indexmass=sortmss(rssi);
+      for(int i=0; i<countkt; i++)
+      {
+          podhodit[i]=raznica[i][indexmass[0]]+raznica[i][indexmass[1]];
+      }
+      int index=0;
+        int minimal = podhodit[index];
+        for(int i=0; i<countkt; i++)
+        {
+            if(minimal>podhodit[i])
+            {
+                minimal=podhodit[i];
+                index=i;
+            }
+        }
+        int [] mycrd=getCoordinate(floor,index);
+        Toast.makeText(getApplicationContext(), "x: "+Double.toString( mycrd[0])+"y:"+Double.toString( mycrd[1]), Toast.LENGTH_SHORT).show();
+
+
+    }
+    private int floor(String macadress)
+    {
+        int k=0;
+        if(macadress.equals("28:28:5d:79:ea:7a")||macadress.equals("c8:3a:35:0f:2c:e0")) {
+            k = 4;//1
+        }
+        if(macadress.equals("")||macadress.equals("")||macadress.equals("")||macadress.equals("")) {
+            k = 2;
+        }
+        if(macadress.equals("")||macadress.equals("")||macadress.equals("")||macadress.equals("")) {
+            k = 3;
+        }
+        if(macadress.equals("00:19:aa:51:81:70")||macadress.equals("00:19:aa:51:87:00")||macadress.equals("00:19:aa:51:81:f0")||macadress.equals("00:19:55:cc:74:10")) {
+            k = 4;
+        }
+        return k;
+    }
+    private int[] getCoordinate(int floor, int tochka)
+    {
+        int [] crdarray = new int [2];
+        int[][][] arrayKTcoord = new int[5][20][4];
+
+        arrayKTcoord[4][0][0] = 0;arrayKTcoord[4][0][1] =0;
+        arrayKTcoord[4][1][0] = 0;arrayKTcoord[4][1][1] =510;
+        arrayKTcoord[4][2][0] = 720;arrayKTcoord[4][2][1] =720;
+        arrayKTcoord[4][3][0] = 720;arrayKTcoord[4][3][1] =0;
+        arrayKTcoord[4][4][0] = 0;arrayKTcoord[4][4][1] =102;
+        arrayKTcoord[4][5][0] = 0;arrayKTcoord[4][5][1] =204;
+        arrayKTcoord[4][6][0] = 0;arrayKTcoord[4][6][1] =306;
+        arrayKTcoord[4][7][0] = 0;arrayKTcoord[4][7][1] =408;
+        arrayKTcoord[4][8][0] = 0;arrayKTcoord[4][8][1] =612;
+        arrayKTcoord[4][9][0] = 0;arrayKTcoord[4][9][1] =720;
+
+
+        crdarray[0]=arrayKTcoord[floor][tochka][0];
+        crdarray[1]=arrayKTcoord[floor][tochka][1];
+
+        return crdarray;
+    }
+    private void generatearrayrssi(List<ScanResult> results)
+    {
+        WifiInfo wifiinfo =  mWifiManager.getConnectionInfo();
+        int rssi[] = new int[4];//4
+        int floor = floor(wifiinfo.getBSSID());
+
+        if(floor!=0) {
+            switch (floor) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    for (int i = 0; i < results.size(); i++) {
+                        if (results.get(i).BSSID.equals("00:19:aa:51:87:00")) {
+                            rssi[0] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
+                            break;
+                        } else rssi[0] = 0;
+                    }
+                    for (int i = 0; i < results.size(); i++) {
+                        if (results.get(i).BSSID.equals("00:19:aa:51:81:70")) {
+                            rssi[1] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
+                            break;
+                        } else rssi[1] = 0;
+                    }
+                    for (int i = 0; i < results.size(); i++) {
+                        if (results.get(i).BSSID.equals("00:19:55:cc:74:10")) {
+                            rssi[2] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
+                            break;
+                        } else rssi[2] = 0;
+                    }
+                    for (int i = 0; i < results.size(); i++) {
+                        if (results.get(i).BSSID.equals("00:19:aa:51:81:f0")) {
+                            rssi[3] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
+                            break;
+                        } else rssi[3] = 0;
+                    }
+                  /*  for (int i = 0; i < results.size(); i++) {
+                        if (results.get(i).BSSID.equals("28:28:5d:79:ea:7a")) {
+                            rssi[0] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
+                            break;
+                        } else rssi[0] = 0;
+                    }
+                    for (int i = 0; i < results.size(); i++) {
+                        if (results.get(i).BSSID.equals("c8:3a:35:0f:2c:e0")) {
+                            rssi[1] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
+
+                            break;
+                        } else rssi[1] = 0;
+                    }*/
+                    Log.e("rsiiicord",Integer.toString( rssi[0])+"    "+Integer.toString( rssi[1])+"    "+Integer.toString( rssi[2])+"    "+Integer.toString( rssi[3]));
+            }
+            CalcRSSIbeetweenUserandKT(rssi, 10, floor);
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "хз в какой мусорке ты находишься, челик", Toast.LENGTH_SHORT).show();
+        }
+    }
+    class WifiReceiver extends BroadcastReceiver {
+        // This method call when number of wifi connections changed
+        public void onReceive(Context c, Intent intent) {
+            int state = mWifiManager.getWifiState();
+            if (state == WifiManager.WIFI_STATE_ENABLED) {
+                wifiList = mWifiManager.getScanResults();
+                generatearrayrssi(wifiList);
+                mWifiManager.startScan();
+            }
+        }
+    }
+    public void onPause() {
+        if (mWifiReceiver != null) {
+            getApplicationContext().unregisterReceiver(mWifiReceiver);
+        }
+        super.onPause();
+    }
+
+    public void onResume() {
+        getApplicationContext().registerReceiver(mWifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        super.onResume();
+    }
+
+
+
+    public int[] sortmss (int rssi[]) {
+        int arrindex[] = {0, 1, 2, 3};
+        for (int i = rssi.length - 1; i > 0; i--) {
+            for (int j = 0; j < i; j++) {
+
+                if (rssi[j] > rssi[j + 1]) {
+                    int tmp = rssi[j];
+                    rssi[j] = rssi[j + 1];
+                    rssi[j + 1] = tmp;
+
+                    tmp = arrindex[j];
+                    arrindex[j] = arrindex[j + 1];
+                    arrindex[j + 1] = tmp;
+                }
+            }
+        }
+        return arrindex;
+    }
+
 }
