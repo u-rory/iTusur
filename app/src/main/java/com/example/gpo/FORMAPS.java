@@ -2090,7 +2090,7 @@ public class MyTask extends AsyncTask<String, String, String> {
                 case 3:
                     break;
                 case 4:
-                   /* for (int i = 0; i < results.size(); i++) {
+                    for (int i = 0; i < results.size(); i++) {
                         if (results.get(i).BSSID.equals("00:19:aa:51:87:00")) {
                             rssi[0] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
                             break;
@@ -2113,8 +2113,8 @@ public class MyTask extends AsyncTask<String, String, String> {
                             rssi[3] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
                             break;
                         } else rssi[3] = 0;
-                    }*/
-                    for (int i = 0; i < results.size(); i++) {
+                    }
+                  /*  for (int i = 0; i < results.size(); i++) {
                         if (results.get(i).BSSID.equals("28:28:5d:79:ea:7a")) {
                             rssi[0] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
                             break;
@@ -2126,7 +2126,7 @@ public class MyTask extends AsyncTask<String, String, String> {
 
                             break;
                         } else rssi[1] = 0;
-                    }
+                    }*/
                     Log.e("rsiiicord",Integer.toString( rssi[0])+"    "+Integer.toString( rssi[1]));
             }
             CalcRSSIbeetweenUserandKT(rssi, 4, floor);
@@ -2158,8 +2158,7 @@ public class MyTask extends AsyncTask<String, String, String> {
         getApplicationContext().registerReceiver(mWifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         super.onResume();
     }
-    public void sendpaint(int start[],int finish[], int coord1[],int coord2[] ) {
-    }
+
 
 
     public int maxinrssi (int rssi[])
