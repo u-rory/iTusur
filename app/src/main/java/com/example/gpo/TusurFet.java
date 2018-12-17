@@ -1,6 +1,7 @@
 package com.example.gpo;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -46,44 +47,46 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
 
 
-
-        /*if((checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) ||
-                (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)){
-            requestPermissions(new String[] {
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                    },
-                    PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION);
-        } else {*/
-        mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (!mWifiManager.isWifiEnabled()) {
-            // If wifi disabled then enable it
-            Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
-            mWifiManager.setWifiEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if((checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) ||
+                    (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)){
+                requestPermissions(new String[] {
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                        },
+                        PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION);
+            } else {
+                mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                if (!mWifiManager.isWifiEnabled()) {
+                    Toast.makeText(getApplicationContext(), "Включите wifi", Toast.LENGTH_LONG).show();
+                    mWifiManager.setWifiEnabled(true);
+                }
+                mWifiReceiver = new WifiReceiver();
+                IntentFilter mIntentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+                mIntentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
+                getApplicationContext().registerReceiver(mWifiReceiver, mIntentFilter);
+                mWifiManager.startScan();
+            }
         }
-        mWifiReceiver = new WifiReceiver();
-        IntentFilter mIntentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        mIntentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
-        getApplicationContext().registerReceiver(mWifiReceiver, mIntentFilter);
-        mWifiManager.startScan();
-        //}
+        else {
+            mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            if (!mWifiManager.isWifiEnabled()) {
 
-
-
-
-
-
-
-
-
-
+                Toast.makeText(getApplicationContext(), "Включите wifi", Toast.LENGTH_LONG).show();
+                mWifiManager.setWifiEnabled(true);
+            }
+            mWifiReceiver = new WifiReceiver();
+            IntentFilter mIntentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+            mIntentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
+            getApplicationContext().registerReceiver(mWifiReceiver, mIntentFilter);
+            mWifiManager.startScan();
+        }
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -320,7 +323,7 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
     {
         int k=0;
         if(macadress.equals("28:28:5d:79:ea:7a")||macadress.equals("c8:3a:35:0f:2c:e0")) {
-            k = 4;//1
+            k = 1;
         }
         if(macadress.equals("")||macadress.equals("")||macadress.equals("")||macadress.equals("")) {
             k = 2;
