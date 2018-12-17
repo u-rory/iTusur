@@ -1,6 +1,8 @@
 package com.example.gpo;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DrawFilter;
@@ -61,6 +63,15 @@ public class TranslateScaleView extends ViewGroup {
     private float[] mDispatchTouchEventWorkingArray = new float[2];
     private float[] mOnTouchEventWorkingArray = new float[2];
 
+    private VectorDrawable mapMarker;
+
+    private Integer x;
+    private Integer y;
+
+    private static final int MARKER_SIZE = 30;
+    private static final int MAP_SIZE = 720;
+    private static final int SHIFT = 80;
+
     private static final DrawFilter filter = new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG, 0);
 
 
@@ -93,6 +104,8 @@ public class TranslateScaleView extends ViewGroup {
         init(context);
         this.vectorDrawable = vectorDrawable;
         this.context = context;
+        mapMarker = (VectorDrawable) this.context.getDrawable(R.drawable.ic_marker);
+        setPoint(0, 102);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     }
 
@@ -118,6 +131,21 @@ public class TranslateScaleView extends ViewGroup {
 
     public void setVectorDrawable(VectorDrawable vectorDrawable) {
         this.vectorDrawable = vectorDrawable;
+        invalidate();
+    }
+
+    public void setPoint(int x, int y) {
+        /**
+         * left, top - начальные координаты
+         * right, bottom - конечные
+         * ширина картинки = right - left
+         * высота = bottom - top
+         * MAP_SIZE - y : поправка на то, что у тебя точка (0, 0) в левом нижнем углу, а не в левом верхнем.
+         * y - MARKER_SIZE : поправка на то, что маркер рисуется относительно левого верхнего угла => указывает маркер ниже точки, от которой рисуется.
+         */
+        mapMarker.setBounds(x - (MARKER_SIZE / 2), (MAP_SIZE - y) - MARKER_SIZE, x + (MARKER_SIZE / 2), MAP_SIZE - y);
+        this.x = x;
+        this.y = y;
         invalidate();
     }
 
@@ -181,12 +209,9 @@ public class TranslateScaleView extends ViewGroup {
         //svg.renderToCanvas(canvas);
         //drawable.draw(canvas);
         vectorDrawable.draw(canvas);
-        mPaint.setColor(Color.RED);
-        mPaint.setStrokeWidth(10);
-        canvas.drawPoint(0, 0, mPaint); //0 0
-        canvas.drawPoint(720, 0, mPaint); //1 0
-        canvas.drawPoint(720, 720, mPaint); //1 1
-        canvas.drawPoint(0, 720, mPaint); //0 1
+        if (x != null && y != null) {
+            mapMarker.draw(canvas);
+        }
         canvas.restore();
     }
 

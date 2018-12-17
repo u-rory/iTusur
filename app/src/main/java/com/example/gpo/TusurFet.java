@@ -317,6 +317,8 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
         int [] mycrd=getCoordinate(floor,index);
         Toast.makeText(getApplicationContext(), "x: "+Double.toString( mycrd[0])+"y:"+Double.toString( mycrd[1]), Toast.LENGTH_SHORT).show();
 
+        // задаёт координаты для отрисовки маркера на карте
+        tusurFet.setPoint(mycrd[0], mycrd[1]);
 
     }
     private int floor(String macadress)
