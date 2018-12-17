@@ -62,17 +62,17 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
                     },
                     PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION);
         } else {*/
-            mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            if (!mWifiManager.isWifiEnabled()) {
-                // If wifi disabled then enable it
-                Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
-                mWifiManager.setWifiEnabled(true);
-            }
-            mWifiReceiver = new WifiReceiver();
-            IntentFilter mIntentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-            mIntentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
-            getApplicationContext().registerReceiver(mWifiReceiver, mIntentFilter);
-            mWifiManager.startScan();
+        mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (!mWifiManager.isWifiEnabled()) {
+            // If wifi disabled then enable it
+            Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
+            mWifiManager.setWifiEnabled(true);
+        }
+        mWifiReceiver = new WifiReceiver();
+        IntentFilter mIntentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        mIntentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
+        getApplicationContext().registerReceiver(mWifiReceiver, mIntentFilter);
+        mWifiManager.startScan();
         //}
 
 
@@ -257,42 +257,51 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
     private void CalcRSSIbeetweenUserandKT( int[] rssi, int countkt, int floor)
     {
 
-        int[][][] arraykt = new int[5][20][2];//4
+        int[][][] arraykt = new int[5][20][4];//4
         //4FloorRouters
-        //lvl
-       /* arraykt[4][0][0] = 19;arraykt[4][0][1] =0 ;arraykt[4][0][2] = 0;arraykt[4][0][3] = 0;
-        arraykt[4][1][0] = 0;arraykt[4][1][1] =19 ;arraykt[4][1][2] = 0;arraykt[4][1][3] = 0;
-        arraykt[4][2][0]= 0;arraykt[4][2][1] =0;arraykt[4][2][2] = 19;arraykt[4][2][3] = 0;
-        arraykt[4][3][0] = 0;arraykt[4][3][1] =0 ;arraykt[4][3][2] = 0;arraykt[4][3][3] = 19;
+        //lvl 8700 8170 7410 81ф0
+        arraykt[4][0][0] = 49;arraykt[4][0][1] =23 ;arraykt[4][0][2] = 0;arraykt[4][0][3] = 0;
+        arraykt[4][1][0] = 0;arraykt[4][1][1] =29 ;arraykt[4][1][2] = 0;arraykt[4][1][3] = 42;
+        arraykt[4][2][0]= 0;arraykt[4][2][1] =14;arraykt[4][2][2] = 38;arraykt[4][2][3] = 0;
+        arraykt[4][3][0] = 27;arraykt[4][3][1] =26 ;arraykt[4][3][2] = 0;arraykt[4][3][3] = 0;
         //............
         //kt
-        arraykt[4][4][0] = mWifiManager.calculateSignalLevel(-92,20);arraykt[4][4][1] =mWifiManager.calculateSignalLevel(-63,20) ;arraykt[4][4][2] = mWifiManager.calculateSignalLevel(-110,20);arraykt[4][4][3] = mWifiManager.calculateSignalLevel(-110,20);
-        arraykt[4][5][0] = mWifiManager.calculateSignalLevel(-62   ,20);arraykt[4][5][1] =mWifiManager.calculateSignalLevel(-82,20) ;arraykt[4][5][1] = mWifiManager.calculateSignalLevel(-69,20);arraykt[4][5][3] = mWifiManager.calculateSignalLevel(-69,20);
-        arraykt[4][6][0]= mWifiManager.calculateSignalLevel(-69,20);arraykt[4][6][1] =mWifiManager.calculateSignalLevel(-69,20);arraykt[4][6][2] = mWifiManager.calculateSignalLevel(-69,20);arraykt[4][6][3] = mWifiManager.calculateSignalLevel(-69,20);
+        int level=50;
+        arraykt[4][4][0]= mWifiManager.calculateSignalLevel(-57,level);arraykt[4][4][1] =mWifiManager.calculateSignalLevel(-75,level) ;arraykt[4][4][2] = mWifiManager.calculateSignalLevel(-110,level);arraykt[4][4][3] = mWifiManager.calculateSignalLevel(-110,level);
+        arraykt[4][5][0]= mWifiManager.calculateSignalLevel(-62,level);arraykt[4][5][1] =mWifiManager.calculateSignalLevel(-76,level) ;arraykt[4][5][2] = mWifiManager.calculateSignalLevel(-110,level);arraykt[4][5][3] = mWifiManager.calculateSignalLevel(-110,level);
+        arraykt[4][6][0]= mWifiManager.calculateSignalLevel(-61,level);arraykt[4][6][1] =mWifiManager.calculateSignalLevel(-72,level);arraykt[4][6][2] = mWifiManager.calculateSignalLevel(-110,level);arraykt[4][6][3] = mWifiManager.calculateSignalLevel(-110,level);
+        arraykt[4][7][0]= mWifiManager.calculateSignalLevel(-63,level);arraykt[4][7][1] =mWifiManager.calculateSignalLevel(-64,level);arraykt[4][7][2] = mWifiManager.calculateSignalLevel(-110,level);arraykt[4][7][3] = mWifiManager.calculateSignalLevel(-110,level);
+        arraykt[4][8][0]= mWifiManager.calculateSignalLevel(-76,level);arraykt[4][8][1] =mWifiManager.calculateSignalLevel(-58,level);arraykt[4][8][2] = mWifiManager.calculateSignalLevel(-110,level);arraykt[4][8][3] = mWifiManager.calculateSignalLevel(-110,level);
+        arraykt[4][9][0]= mWifiManager.calculateSignalLevel(-77,level);arraykt[4][9][1] =mWifiManager.calculateSignalLevel(-66,level);arraykt[4][9][2] = mWifiManager.calculateSignalLevel(-110,level);arraykt[4][9][3] = mWifiManager.calculateSignalLevel(-110,level);
+
+
+
+
+
         //............*/
-        arraykt[4][0][0] = mWifiManager.calculateSignalLevel(-35,20);arraykt[4][0][1] =mWifiManager.calculateSignalLevel(-62,20) ;
+      /*  arraykt[4][0][0] = mWifiManager.calculateSignalLevel(-35,20);arraykt[4][0][1] =mWifiManager.calculateSignalLevel(-62,20) ;
         arraykt[4][1][0] = mWifiManager.calculateSignalLevel(-74,20);arraykt[4][1][1] =mWifiManager.calculateSignalLevel(-57,20) ;
         arraykt[4][2][0]= mWifiManager.calculateSignalLevel(-63,20);arraykt[4][2][1] =mWifiManager.calculateSignalLevel(-62,20);
-        arraykt[4][3][0] = mWifiManager.calculateSignalLevel(-69,20);arraykt[4][3][1] =mWifiManager.calculateSignalLevel(-60,20) ;
+        arraykt[4][3][0] = mWifiManager.calculateSignalLevel(-69,20);arraykt[4][3][1] =mWifiManager.calculateSignalLevel(-60,20) ;*/
 
 
         int [][] raznica = new int [countkt][4];
 
-      for(int i = 0; i<countkt; i++)
-      {
-          for(int j=0; j<4;j++)
-          {
-              raznica[i][j]=Math.abs(arraykt[floor ][i][j]-rssi[j]);
-          }
-      }
+        for(int i = 0; i<countkt; i++)
+        {
+            for(int j=0; j<4;j++)
+            {
+                raznica[i][j]=Math.abs(arraykt[floor ][i][j]-rssi[j]);
+            }
+        }
 
         int [] podhodit = new int [countkt];
-      int [] indexmass=sortmss(rssi);
-      for(int i=0; i<countkt; i++)
-      {
-          podhodit[i]=raznica[i][indexmass[0]]+raznica[i][indexmass[1]];
-      }
-      int index=0;
+        int [] indexmass=sortmss(rssi);
+        for(int i=0; i<countkt; i++)
+        {
+            podhodit[i]=raznica[i][indexmass[0]]+raznica[i][indexmass[1]];
+        }
+        int index=0;
         int minimal = podhodit[index];
         for(int i=0; i<countkt; i++)
         {
@@ -328,17 +337,18 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
     {
         int [] crdarray = new int [2];
         int[][][] arrayKTcoord = new int[5][20][4];
-
+//tipa routeri
         arrayKTcoord[4][0][0] = 0;arrayKTcoord[4][0][1] =0;
-        arrayKTcoord[4][1][0] = 0;arrayKTcoord[4][1][1] =510;
+        arrayKTcoord[4][1][0] = 720;arrayKTcoord[4][1][1] =0;
         arrayKTcoord[4][2][0] = 720;arrayKTcoord[4][2][1] =720;
-        arrayKTcoord[4][3][0] = 720;arrayKTcoord[4][3][1] =0;
+        arrayKTcoord[4][3][0] = 0;arrayKTcoord[4][3][1] =720;
+
         arrayKTcoord[4][4][0] = 0;arrayKTcoord[4][4][1] =102;
         arrayKTcoord[4][5][0] = 0;arrayKTcoord[4][5][1] =204;
         arrayKTcoord[4][6][0] = 0;arrayKTcoord[4][6][1] =306;
         arrayKTcoord[4][7][0] = 0;arrayKTcoord[4][7][1] =408;
-        arrayKTcoord[4][8][0] = 0;arrayKTcoord[4][8][1] =612;
-        arrayKTcoord[4][9][0] = 0;arrayKTcoord[4][9][1] =720;
+        arrayKTcoord[4][8][0] = 0;arrayKTcoord[4][8][1] =510;
+        arrayKTcoord[4][9][0] = 0;arrayKTcoord[4][9][1] =612;
 
 
         crdarray[0]=arrayKTcoord[floor][tochka][0];
@@ -363,25 +373,25 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
                 case 4:
                     for (int i = 0; i < results.size(); i++) {
                         if (results.get(i).BSSID.equals("00:19:aa:51:87:00")) {
-                            rssi[0] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
+                            rssi[0] = mWifiManager.calculateSignalLevel(results.get(i).level, 50);
                             break;
                         } else rssi[0] = 0;
                     }
                     for (int i = 0; i < results.size(); i++) {
                         if (results.get(i).BSSID.equals("00:19:aa:51:81:70")) {
-                            rssi[1] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
+                            rssi[1] = mWifiManager.calculateSignalLevel(results.get(i).level, 50);
                             break;
                         } else rssi[1] = 0;
                     }
                     for (int i = 0; i < results.size(); i++) {
                         if (results.get(i).BSSID.equals("00:19:55:cc:74:10")) {
-                            rssi[2] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
+                            rssi[2] = mWifiManager.calculateSignalLevel(results.get(i).level, 50);
                             break;
                         } else rssi[2] = 0;
                     }
                     for (int i = 0; i < results.size(); i++) {
                         if (results.get(i).BSSID.equals("00:19:aa:51:81:f0")) {
-                            rssi[3] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
+                            rssi[3] = mWifiManager.calculateSignalLevel(results.get(i).level, 50);
                             break;
                         } else rssi[3] = 0;
                     }
@@ -414,7 +424,6 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
             if (state == WifiManager.WIFI_STATE_ENABLED) {
                 wifiList = mWifiManager.getScanResults();
                 generatearrayrssi(wifiList);
-                mWifiManager.startScan();
             }
         }
     }
@@ -437,7 +446,7 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
         for (int i = rssi.length - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
 
-                if (rssi[j] > rssi[j + 1]) {
+                if (rssi[j] < rssi[j + 1]) {
                     int tmp = rssi[j];
                     rssi[j] = rssi[j + 1];
                     rssi[j + 1] = tmp;
@@ -445,6 +454,8 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
                     tmp = arrindex[j];
                     arrindex[j] = arrindex[j + 1];
                     arrindex[j + 1] = tmp;
+                    Log.e("indexmass",Integer.toString( arrindex[0])+"    "+Integer.toString( arrindex[1])+"    "+Integer.toString( arrindex[2])+"    "+Integer.toString( arrindex[3]));
+
                 }
             }
         }
