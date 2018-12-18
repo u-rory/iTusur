@@ -105,7 +105,6 @@ public class TranslateScaleView extends ViewGroup {
         this.vectorDrawable = vectorDrawable;
         this.context = context;
         mapMarker = (VectorDrawable) this.context.getDrawable(R.drawable.ic_marker);
-        setPoint(0, 102);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     }
 
