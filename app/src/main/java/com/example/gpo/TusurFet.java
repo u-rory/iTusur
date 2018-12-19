@@ -320,10 +320,14 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
 
         int [] podhodit = new int [countkt];
         int [] indexmass=sortmss(rssi);
+        int count = countnonull(rssi);
 
-        for(int i=0; i<countkt; i++)
-            podhodit[i]=raznica[i][indexmass[0]]+raznica[i][indexmass[1]];
-
+        for (int i = 0; i < countkt; i++) {
+            podhodit[i] = 0;
+            for (int j = 0; j < count; j++) {
+                podhodit[i] = podhodit[i] + raznica[i][indexmass[j]];
+            }
+        }
 
         int index=0;
         int minimal = podhodit[index];
@@ -345,7 +349,7 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
     private int floor(String macadress)
     {
         int k=0;
-        if(macadress.equals("")||macadress.equals("")) {
+        if(macadress.equals("")||macadress.equals("")||macadress.equals("")||macadress.equals("")) {
             k = 1;
         }
         if(macadress.equals("")||macadress.equals("")||macadress.equals("")||macadress.equals("")) {
@@ -492,5 +496,15 @@ public class TusurFet extends AppCompatActivity implements View.OnClickListener 
             }
         }
         return arrindex;
+    }
+
+    public int countnonull (int rssi[]) {
+        int count = 0;
+        for (int i = 0; i < 4; i++) {
+            if (rssi[i] > 0) {
+                count++;
+            }
+        }
+        return count;
     }
 }

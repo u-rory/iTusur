@@ -1,22 +1,12 @@
 package com.example.gpo;
 
-import android.Manifest;
+
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
-import android.os.Handler;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -26,26 +16,16 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 public class FORMAPS extends Activity {
     WebView webView;
     TextView number, opis,telefon, time;
     CardView cd;
     ProgressBar pb;
-    WifiManager mWifiManager;
-    WifiReceiver mWifiReceiver;
-    List<ScanResult> wifiList;
     private static final String PREFS_FILE = "Account";
     private static final String PREF_ROOMS = "Rooms";
-    private static final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION = 1;
     SharedPreferences settings;
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint({"JavascriptInterface", "SetJavaScriptEnabled"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,27 +37,6 @@ public class FORMAPS extends Activity {
         telefon=(TextView) findViewById(R.id.telefonmaps);
         time=(TextView) findViewById(R.id.timemaps);
         pb=(ProgressBar)findViewById(R.id.pbmaps) ;
-
-        if((checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) ||
-                (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)){
-            requestPermissions(new String[] {
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                },
-                    PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION);
-        } else {
-            mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            if (!mWifiManager.isWifiEnabled()) {
-                // If wifi disabled then enable it
-                Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
-                mWifiManager.setWifiEnabled(true);
-            }
-            mWifiReceiver = new WifiReceiver();
-            IntentFilter mIntentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-            mIntentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
-            getApplicationContext().registerReceiver(mWifiReceiver, mIntentFilter);
-            mWifiManager.startScan();
-        }
 
         webView = (WebView) findViewById(R.id.kartishki);
         webView.getSettings().setJavaScriptEnabled(true);
@@ -1182,25 +1141,6 @@ public class FORMAPS extends Activity {
         }, "room431");
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-        if (requestCode == PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-            mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            if (!mWifiManager.isWifiEnabled()) {
-                // If wifi disabled then enable it
-                Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
-                mWifiManager.setWifiEnabled(true);
-            }
-            mWifiReceiver = new WifiReceiver();
-            IntentFilter mIntentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-            mIntentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
-            getApplicationContext().registerReceiver(mWifiReceiver, mIntentFilter);
-            mWifiManager.startScan();
-        }
-    }
 public class MyTask extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
@@ -1931,248 +1871,5 @@ public class MyTask extends AsyncTask<String, String, String> {
     public void onBackPressed() {
         super.onBackPressed();
 
-    }
-
-    private void CalcRSSIbeetweenUserandKT( int[] rssi, int countkt, int floor)
-    {
-
-        int[][][] arraykt = new int[5][20][2];//4
-        //4FloorRouters
-        //lvl
-       /* arraykt[4][0][0] = 19;arraykt[4][0][1] =0 ;arraykt[4][0][2] = 0;arraykt[4][0][3] = 0;
-        arraykt[4][1][0] = 0;arraykt[4][1][1] =19 ;arraykt[4][1][2] = 0;arraykt[4][1][3] = 0;
-        arraykt[4][2][0]= 0;arraykt[4][2][1] =0;arraykt[4][2][2] = 19;arraykt[4][2][3] = 0;
-        arraykt[4][3][0] = 0;arraykt[4][3][1] =0 ;arraykt[4][3][2] = 0;arraykt[4][3][3] = 19;
-        //............
-        //kt
-        arraykt[4][4][0] = mWifiManager.calculateSignalLevel(-92,20);arraykt[4][4][1] =mWifiManager.calculateSignalLevel(-63,20) ;arraykt[4][4][2] = mWifiManager.calculateSignalLevel(-110,20);arraykt[4][4][3] = mWifiManager.calculateSignalLevel(-110,20);
-        arraykt[4][5][0] = mWifiManager.calculateSignalLevel(-62   ,20);arraykt[4][5][1] =mWifiManager.calculateSignalLevel(-82,20) ;arraykt[4][5][1] = mWifiManager.calculateSignalLevel(-69,20);arraykt[4][5][3] = mWifiManager.calculateSignalLevel(-69,20);
-        arraykt[4][6][0]= mWifiManager.calculateSignalLevel(-69,20);arraykt[4][6][1] =mWifiManager.calculateSignalLevel(-69,20);arraykt[4][6][2] = mWifiManager.calculateSignalLevel(-69,20);arraykt[4][6][3] = mWifiManager.calculateSignalLevel(-69,20);
-        //............*/
-        arraykt[4][0][0] = mWifiManager.calculateSignalLevel(-35,20);arraykt[4][0][1] =mWifiManager.calculateSignalLevel(-62,20) ;
-        arraykt[4][1][0] = mWifiManager.calculateSignalLevel(-74,20);arraykt[4][1][1] =mWifiManager.calculateSignalLevel(-57,20) ;
-        arraykt[4][2][0]= mWifiManager.calculateSignalLevel(-63,20);arraykt[4][2][1] =mWifiManager.calculateSignalLevel(-62,20);
-        arraykt[4][3][0] = mWifiManager.calculateSignalLevel(-69,20);arraykt[4][3][1] =mWifiManager.calculateSignalLevel(-60,20) ;
-        int [] raznica = new int [countkt];
-
-        for(int i=0; i<countkt; i++)
-                raznica[i]= Math.abs(arraykt[floor][i][0]- rssi[0])+Math.abs(arraykt[floor][i][1]- rssi[1]);/*)+Math.abs(arraykt[floor][i][2]- rssi[2])+Math.abs(arraykt[floor][i][3]- rssi[3])*/;
-        Log.e("raznica s tochkami",Double.toString( raznica[0])+"    "+Double.toString( raznica[1])+"    "+Double.toString( raznica[2])+"    "+Double.toString( raznica[3]));
-        int minimalrssi1=raznica[0];
-        int tochka1=0,tochka2;
-        int minimalrssi2;
-
-        for(int i=0; i<countkt;i++)
-            if(minimalrssi1>raznica[i]) {
-            minimalrssi1=raznica[i];
-            tochka1=i;
-        }
-        if(tochka1==0) { minimalrssi2=raznica[1];tochka2=1; }
-        else{ minimalrssi2=raznica[0];tochka2=0; }
-
-        for(int i=0; i<countkt;i++) {
-            if (minimalrssi2 > raznica[i] && tochka1 != i) {
-                minimalrssi2 = raznica[i];
-                tochka2 = i;
-            }
-        }
-        Log.e("minimal",Integer.toString(  minimalrssi1)+"    "+Integer.toString( minimalrssi2));
-
-        int numbercurrentrouter=maxinrssi(rssi);
-        int maxt1=arraykt[floor][tochka1][numbercurrentrouter];
-        int maxt2=arraykt[floor][tochka2][numbercurrentrouter];
-
-        Log.e("maxt1",Double.toString( maxt1));
-        Log.e("maxt2",Double.toString( maxt2));
-        int mbtntochek=33;//mejdu tochek huinya
-        int maxminus12=Math.abs(maxt1-maxt2);
-        double tmp=0.0;
-         tmp=tmp+(mbtntochek/maxminus12);
-        Log.e("sootnoshenie",Double.toString(tmp));
-/////////tut stopanulsya
-        int[] coord1 = getCoordinate(floor,tochka1);
-        int[] coord2 = getCoordinate(floor,tochka2);
-
-        Log.e("t1",Integer.toString( coord1[0])+"    "+Integer.toString(  coord1[1]));
-        Log.e("t2",Integer.toString(  coord2[0])+"    "+Integer.toString( coord2[1]));
-
-        double[] mycrd = new double[2];
-
-        if(coord1[0]==coord2[0])
-        {
-            if(maxt1<maxt2) {
-
-                mycrd[1]=coord1[1]+ (maxt2 - rssi[numbercurrentrouter]) * tmp;
-            }
-            else {
-                mycrd[1]=coord1[1]+ (maxt1 - rssi[numbercurrentrouter]) * tmp;
-            }
-            mycrd[0]=coord1[0];
-        }
-        else
-        {
-            if(maxt1<maxt2)
-            {
-                mycrd[0]=coord1[0]+(maxt2 - rssi[numbercurrentrouter]) * tmp;
-            }
-            else
-            {
-                mycrd[0]=coord1[0]-(maxt1 - rssi[numbercurrentrouter]) * tmp;
-            }
-            mycrd[1]=coord1[1];
-        }
-        Log.e("mycoordinate",Double.toString( mycrd[0])+"    "+Double.toString( mycrd[1]));
-        Toast.makeText(getApplicationContext(), "x: "+Double.toString( mycrd[0])+"y:"+Double.toString( mycrd[1]), Toast.LENGTH_SHORT).show();
-
-
-
-
-
-
-
-
-
-
-
-
-        //sendpaint( arraystartcoord,arrayfinishcoord, getCoordinate(floor,tochka1), getCoordinate(floor,tochka2));
-    }
-    private int floor(String macadress)
-    {
-        int k=0;
-        if(macadress.equals("28:28:5d:79:ea:7a")||macadress.equals("c8:3a:35:0f:2c:e0")) {
-            k = 4;//1
-        }
-        if(macadress.equals("")||macadress.equals("")||macadress.equals("")||macadress.equals("")) {
-            k = 2;
-        }
-        if(macadress.equals("")||macadress.equals("")||macadress.equals("")||macadress.equals("")) {
-            k = 3;
-        }
-        if(macadress.equals("00:19:aa:51:87:20")||macadress.equals("00:19:aa:51:87:00")||macadress.equals("00:19:aa:51:81:f0")||macadress.equals("00:19:55:cc:74:10")) {
-            k = 4;
-        }
-        return k;
-    }
-    private int[] getCoordinate(int floor, int tochka)
-    {
-        int [] crdarray = new int [2];
-        int[][][] arrayKTcoord = new int[5][20][2];
-
-        arrayKTcoord[4][0][0] = 0;arrayKTcoord[4][0][1] =0;
-        arrayKTcoord[4][1][0] = 0;arrayKTcoord[4][1][1] =100;
-       /* arrayKTcoord[4][2][0] = 100;arrayKTcoord[4][2][1] =100;
-        arrayKTcoord[4][3][0] = 100;arrayKTcoord[4][3][1] =0;
-        arrayKTcoord[4][4][0] = 0;arrayKTcoord[4][0][1] =30;
-        arrayKTcoord[4][5][0] = 0;arrayKTcoord[4][1][1] =60;
-        arrayKTcoord[4][6][0] = 0;arrayKTcoord[4][2][1] =90;*/
-        arrayKTcoord[4][2][0] = 0;arrayKTcoord[4][2][1] =33;
-        arrayKTcoord[4][3][0] = 0;arrayKTcoord[4][3][1] =66;
-        //..........
-
-        crdarray[0]=arrayKTcoord[floor][tochka][0];
-        crdarray[1]=arrayKTcoord[floor][tochka][1];
-
-        return crdarray;
-    }
-    private void generatearrayrssi(List<ScanResult> results)
-    {
-        WifiInfo wifiinfo =  mWifiManager.getConnectionInfo();
-        int rssi[] = new int[2];//4
-        int floor = floor(wifiinfo.getBSSID());
-
-        if(floor!=0) {
-            switch (floor) {
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    for (int i = 0; i < results.size(); i++) {
-                        if (results.get(i).BSSID.equals("00:19:aa:51:87:00")) {
-                            rssi[0] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
-                            break;
-                        } else rssi[0] = 0;
-                    }
-                    for (int i = 0; i < results.size(); i++) {
-                        if (results.get(i).BSSID.equals("00:19:aa:51:87:20")) {
-                            rssi[1] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
-                            break;
-                        } else rssi[1] = 0;
-                    }
-                    for (int i = 0; i < results.size(); i++) {
-                        if (results.get(i).BSSID.equals("00:19:55:cc:74:10")) {
-                            rssi[2] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
-                            break;
-                        } else rssi[2] = 0;
-                    }
-                    for (int i = 0; i < results.size(); i++) {
-                        if (results.get(i).BSSID.equals("00:19:aa:51:81:f0")) {
-                            rssi[3] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
-                            break;
-                        } else rssi[3] = 0;
-                    }
-                  /*  for (int i = 0; i < results.size(); i++) {
-                        if (results.get(i).BSSID.equals("28:28:5d:79:ea:7a")) {
-                            rssi[0] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
-                            break;
-                        } else rssi[0] = 0;
-                    }
-                    for (int i = 0; i < results.size(); i++) {
-                        if (results.get(i).BSSID.equals("c8:3a:35:0f:2c:e0")) {
-                            rssi[1] = mWifiManager.calculateSignalLevel(results.get(i).level, 20);
-
-                            break;
-                        } else rssi[1] = 0;
-                    }*/
-                    Log.e("rsiiicord",Integer.toString( rssi[0])+"    "+Integer.toString( rssi[1]));
-            }
-            CalcRSSIbeetweenUserandKT(rssi, 4, floor);
-        }
-        else
-        {
-            Toast.makeText(getApplicationContext(), "хз в какой мусорке ты находишься, челик", Toast.LENGTH_SHORT).show();
-        }
-    }
-    class WifiReceiver extends BroadcastReceiver {
-        // This method call when number of wifi connections changed
-        public void onReceive(Context c, Intent intent) {
-            int state = mWifiManager.getWifiState();
-            if (state == WifiManager.WIFI_STATE_ENABLED) {
-                wifiList = mWifiManager.getScanResults();
-                generatearrayrssi(wifiList);
-                mWifiManager.startScan();
-            }
-        }
-    }
-    public void onPause() {
-        if (mWifiReceiver != null) {
-            getApplicationContext().unregisterReceiver(mWifiReceiver);
-        }
-        super.onPause();
-    }
-
-    public void onResume() {
-        getApplicationContext().registerReceiver(mWifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        super.onResume();
-    }
-
-
-
-    public int maxinrssi (int rssi[])
-    {
-        int numberrouter=0;
-        int max=rssi[0];
-        for(int i=0; i<2;i++)//4 esli fet
-        {
-            if(max<rssi[i])
-            {
-                max=rssi[i];
-                numberrouter=i;
-            }
-        }
-        return numberrouter;
     }
 }
